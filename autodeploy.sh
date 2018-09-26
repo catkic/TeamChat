@@ -1,7 +1,5 @@
 yum install -y git gcc gcc-c++ mysql-devel
-cd /opt
-git clone https://gitee.com/yiyefangzhou24/TeamTalk.git
-cd ./TeamTalk/server/src
+cd ./server/src
 chmod +x make_protobuf.sh
 chmod +x make_hiredis.sh
 chmod +x make_mariadb.sh
