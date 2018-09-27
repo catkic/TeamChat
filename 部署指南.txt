@@ -1,4 +1,4 @@
-yum install -y git gcc gcc-c++ mysql-devel
+yum install -y git gcc gcc-c++ mysql-devel unzip zip
 cd ./server/src
 chmod +x make_protobuf.sh
 chmod +x make_hiredis.sh
