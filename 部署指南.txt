@@ -18,3 +18,8 @@ cp tt.zip ./auto_setup/im_web/
 cd auto_setup
 chmod +x setup.sh
 ./setup.sh install
+#重新分配图片传输文件夹（bug）
+cd ./im_server/im-server-1/msfs/
+mkdir files
+vim msfs.conf #修改BaseDir=./files
+../daeml msfs
