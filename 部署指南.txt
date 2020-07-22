@@ -17,7 +17,7 @@ zip -q -r tt.zip tt
 cp tt.zip ./auto_setup/im_web/
 cd auto_setup
 chmod +x setup.sh
-./setup.sh install
+./setup.sh install              #mysql数据库密码应为12345，否则在TeamTalk/auto_setup/mariadb/setup.sh同步更改
 #重新分配图片传输文件夹（bug）
 cd ./im_server/im-server-1/msfs/
 mkdir files
