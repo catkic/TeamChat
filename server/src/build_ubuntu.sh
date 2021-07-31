@@ -12,7 +12,10 @@ build() {
     apt-get -y install libcurl4-openssl-dev
 #    apt-get -y install openssl-devel
     apt-get -y  install libcurl-dev 
-    apt-get -y  install liblog4cxx10-dev libprotobuf-lite8 libhiredis-dev protobuf-compiler cmake g++  libprotobuf-dev
+    sudo apt-get install libssl-dev 
+    apt-get -y  install liblog4cxx10-dev libprotobuf-lite8 libhiredis-dev 
+    apt install liblog4cxx-dev libmysqlclient-dev -y
+#     protobuf-compiler cmake g++  libprotobuf-dev
 
 	echo "#ifndef __VERSION_H__" > base/version.h
 	echo "#define __VERSION_H__" >> base/version.h
@@ -30,7 +33,7 @@ CURPWD=$PWD
 	 for i in base slog  route_server msg_server http_msg_server file_server push_server tools db_proxy_server msfs login_server ; do     
 		cd $CURPWD/$i
 		cmake .
-		make
+		make -j4
     		if [ $? -eq 0 ]; then
     		    echo "make msfs successed";
   		  else
