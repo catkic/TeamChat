@@ -1,57 +1,55 @@
 #!/bin/bash
 
-
 build() {
-	export CPLUS_INCLUDE_PATH=$PWD/slog
-	export LD_LIBRARY_PATH=$PWD/slog
-	export LIBRARY_PATH=$PWD/slog:$LIBRARY_PATH
+    export CPLUS_INCLUDE_PATH=$PWD/slog
+    export LD_LIBRARY_PATH=$PWD/slog
+    export LIBRARY_PATH=$PWD/slog:$LIBRARY_PATH
 
+    apt-get -y install cmake libuu-dev libcurl4-openssl-dev libssl-dev libhiredis-dev liblog4cxx-dev libmysqlclient-dev
+    #     protobuf-compiler cmake g++  libprotobuf-dev liblog4cxx10-dev libprotobuf-lite8
 
-    apt-get -y install cmake
-    apt-get -y install libuu-dev 
-    apt-get -y install libcurl4-openssl-dev
-#    apt-get -y install openssl-devel
-    apt-get -y  install libcurl-dev 
-    sudo apt-get install libssl-dev 
-    apt-get -y  install liblog4cxx10-dev libprotobuf-lite8 libhiredis-dev 
-    apt install liblog4cxx-dev libmysqlclient-dev -y
-#     protobuf-compiler cmake g++  libprotobuf-dev
+    echo "#ifndef __VERSION_H__" >base/version.h
+    echo "#define __VERSION_H__" >>base/version.h
+    echo "#define VERSION \"$1\"" >>base/version.h
+    echo "#endif" >>base/version.h
 
-	echo "#ifndef __VERSION_H__" > base/version.h
-	echo "#define __VERSION_H__" >> base/version.h
-	echo "#define VERSION \"$1\"" >> base/version.h
-	echo "#endif" >> base/version.h
-
-    if [ ! -d lib ]
-    then
+    if [ ! -d lib ]; then
         mkdir lib
     fi
 
-CURPWD=$PWD	
+    CURPWD=$PWD
 
+    for i in base slog route_server msg_server http_msg_server file_server push_server db_proxy_server msfs login_server; do
+        cd $CURPWD/$i
+        cmake .
+        make -j4
+        if [ $? -eq 0 ]; then
+            echo "make msfs successed"
+        else
+            echo "make msfs failed"
+            exit
+        fi
+    done
+    
+    for i in tools; do
+        cd $CURPWD/$i
+        # cmake .
+        make -j4
+        if [ $? -eq 0 ]; then
+            echo "make msfs successed"
+        else
+            echo "make msfs failed"
+            exit
+        fi
+    done
 
-	 for i in base slog  route_server msg_server http_msg_server file_server push_server tools db_proxy_server msfs login_server ; do     
-		cd $CURPWD/$i
-		cmake .
-		make -j4
-    		if [ $? -eq 0 ]; then
-    		    echo "make msfs successed";
-  		  else
-       		 echo "make msfs failed";
-       		 exit;
-    		fi
-		
+    cd $CURPWD
 
+    cp base/libbase.a lib/
 
-	done
-	
-	cd $CURPWD
-
-        cp base/libbase.a lib/
-	 
-    	mkdir base/slog/lib
-        cp slog/slog_api.h base/slog/
-        cp slog/libslog.so base/slog/lib/
+    mkdir -p base/slog/lib
+    cp slog/slog_api.h base/slog/
+    cp slog/libslog.so base/slog/lib/
 
     mkdir -p ../run/login_server
     mkdir -p ../run/route_server
@@ -62,14 +60,12 @@ CURPWD=$PWD
     mkdir -p ../run/http_msg_server
     mkdir -p ../run/db_proxy_server
 
+    #copy executables to run/ dir
+    cp login_server/login_server ../run/login_server/
 
+    cp route_server/route_server ../run/route_server/
 
-	#copy executables to run/ dir
-	cp login_server/login_server ../run/login_server/
-
-	cp route_server/route_server ../run/route_server/
-
-	cp msg_server/msg_server ../run/msg_server/
+    cp msg_server/msg_server ../run/msg_server/
 
     cp http_msg_server/http_msg_server ../run/http_msg_server/
 
@@ -85,9 +81,9 @@ CURPWD=$PWD
 
     build_version=im-server-$1
     build_name=$build_version.tar.gz
-	if [ -e "$build_name" ]; then
-		rm $build_name
-	fi
+    if [ -e "$build_name" ]; then
+        rm $build_name
+    fi
     mkdir -p ../$build_version
     mkdir -p ../$build_version/login_server
     mkdir -p ../$build_version/route_server
@@ -124,63 +120,65 @@ CURPWD=$PWD
     cp msfs/msfs.conf.example ../$build_version/msfs/
 
     cp slog/log4cxx.properties ../$build_version/lib/
-    cp slog/libslog.so  ../$build_version/lib/
-    cp -a slog/lib/liblog4cxx.so* ../$build_version/lib/
+    cp slog/libslog.so ../$build_version/lib/
+    # 如果是自己编译的在这里
+    # cp -a slog/lib/liblog4cxx.so* ../$build_version/lib/
+    cp -a /usr/lib/x86_64-linux-gnu/liblog4cxx.so* ../$build_version/lib/
     cp sync_lib_for_zip.sh ../$build_version/
 
     cp tools/daeml ../$build_version/
     cp ../run/restart.sh ../$build_version/
 
     cd ../
-    tar zcvf    $build_name $build_version
+    tar zcvf $build_name $build_version
 
     rm -rf $build_version
-} 
+}
 
 clean() {
-	cd base
-	make clean
-	cd ../login_server
-	make clean
-	cd ../route_server
-	make clean
-	cd ../msg_server
-	make clean
-	cd ../http_msg_server
+    cd base
     make clean
-	cd ../file_server
+    cd ../login_server
+    make clean
+    cd ../route_server
+    make clean
+    cd ../msg_server
+    make clean
+    cd ../http_msg_server
+    make clean
+    cd ../file_server
     make clean
     cd ../push_server
     make clean
-	cd ../db_proxy_server
-	make clean
+    cd ../db_proxy_server
+    make clean
     cd ../push_server
     make clean
 }
 
 print_help() {
-	echo "Usage: "
-	echo "  $0 clean --- clean all build"
-	echo "  $0 version version_str --- build a version"
+    echo "Usage: "
+    echo "  $0 clean --- clean all build"
+    echo "  $0 version version_str --- build a version"
 }
 
 case $1 in
-	clean)
-		echo "clean all build..."
-		clean
-		;;
-	version)
-		if [ $# != 2 ]; then 
-			echo $#
-			print_help
-			exit
-		fi
+clean)
+    echo "clean all build..."
+    clean
+    ;;
+version)
+    if [ $# != 2 ]; then
+        echo $#
+        print_help
+        exit
+    fi
 
-		echo $2
-		echo "build..."
-		build $2
-		;;
-	*)
-		print_help
-		;;
+    echo $2
+    echo "build..."
+    build $2
+    ;;
+*)
+    print_help
+    ;;
 esac
