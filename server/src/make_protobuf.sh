@@ -66,7 +66,7 @@ build_protobuf(){
     tar -xf $PROTOBUF.tar.gz
     cd $PROTOBUF
     ./configure --prefix=$CUR_DIR/protobuf
-    make
+    make -j4
     make install
     cd ..
     mkdir -p ../base/pb/lib/linux/

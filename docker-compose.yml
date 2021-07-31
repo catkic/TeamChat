@@ -1,0 +1,26 @@
+version: '2'
+services:
+  team-mysql:
+    build:
+      context: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+      TZ: Asia/Shanghai
+    container_name: teamtalk-mysql
+    image: teamtalk-mysql
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --max_allowed_packet=128M
+    ports:
+      - 3306:3306
+
+  team-redis:
+    image: redis:5.0
+    ports:
+      - 6379:6379
+    hostname: teamtalk-redis
+    container_name: teamtalk-redis
+

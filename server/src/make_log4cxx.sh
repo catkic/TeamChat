@@ -79,17 +79,22 @@ get_cur_dir() {
 }
 
 build_log4cxx(){
-    apt -y install apr-devel
-    apt -y install apr-util-devel
+    # apt -y install apr-devel
+    # apt -y install apr-util-devel
     cd log4cxx
     download $LOG4CXX.tar.gz $LOG4CXX_PATH
     tar -xf $LOG4CXX.tar.gz
     cd $LOG4CXX
-    ./configure --prefix=$CUR_DIR/log4cxx --with-apr=/usr --with-apr-util=/usr
     cp ../inputstreamreader.cpp ./src/main/cpp/
     cp ../socketoutputstream.cpp ./src/main/cpp/
+    cp ../loggingevent.cpp ./src/main/cpp/
+    cp ../locationinfo.cpp ./src/main/cpp/
+    cp ../objectoutputstream.cpp ./src/main/cpp/
     cp ../console.cpp ./src/examples/cpp/
-    make
+    cp ../domtestcase.cpp ./src/test/cpp/xml/
+    exit
+    ./configure --prefix=$CUR_DIR/log4cxx --with-apr=/usr --with-apr-util=/usr
+    make -j4
     make install
     cd ../../
     cp -rf log4cxx/include slog/
@@ -97,6 +102,6 @@ build_log4cxx(){
     cp -f log4cxx/lib/liblog4cxx.so* slog/lib/
 }
 
-check_user
+# check_user
 get_cur_dir
 build_log4cxx
