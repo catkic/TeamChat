@@ -2,4 +2,4 @@
 
 学习IM
 
-- [ ] Ubuntu环境配置
+- [x] Ubuntu环境配置
