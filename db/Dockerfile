@@ -1,4 +1,4 @@
-FROM mysql:8.0.19
+FROM mysql:5.7
 
 MAINTAINER catkic@catkic.cn
 

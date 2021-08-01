@@ -36,7 +36,7 @@ check_os() {
 			return 0
 		else
 			echo "Error: OS must be CentOS 64bit to run this script."
-			exit 1
+		#	exit 1
 		fi
 	else
 		echo "Error: OS must be CentOS 64bit to run this script."
@@ -54,6 +54,7 @@ check_run() {
 
 
 clean_yum() {
+	return 0
 	YUM_PID=/var/run/yum.pid
 	if [ -f "$YUM_PID" ]; then
 		set -x
