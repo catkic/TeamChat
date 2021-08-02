@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.7)
+project(tramtalk)
+
+message(${PROJECT_SOURCE_DIR})
+add_subdirectory("${PROJECT_SOURCE_DIR}/db_proxy_server")
+add_subdirectory("${PROJECT_SOURCE_DIR}/file_server")
+add_subdirectory("${PROJECT_SOURCE_DIR}/login_server")
+add_subdirectory("${PROJECT_SOURCE_DIR}/push_server")
+add_subdirectory("${PROJECT_SOURCE_DIR}/msg_server")
+add_subdirectory("${PROJECT_SOURCE_DIR}/route_server")
+#add_subdirectory("${PROJECT_SOURCE_DIR}/../my_application" "${PROJECT_SOURCE_DIR}/my_application_output")
